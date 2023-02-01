@@ -1065,5 +1065,55 @@ opm install add
 
 ## Запуск из консоли
 
+Теперь представим, что мы сделали кучу тестов, и хотим их запускать одной командой/батником. Не заморачиваясь с запуском самой 1С. Да еще и просмотреть результат в косоли. А кто-то даже отправить результат в allure. И это тоже можно. Но стоит вернуться в начало, и удостовериться что мы установили Vanessa-ADD как бибилиотеку OneScript.
 
+Для автозапуска тестов 1С нам еще понадобится одна библиотека. Установить ее
 
+```cmd
+opm install vanessa-runner
+```
+
+Теперь нам доступна команда ```vrunner```. Она очень богатая и полезная. А сейчас нужно написать скрипт запуска тестов, и несколько файлов с настройками.
+
+```run_tests.cmd``` - Скрипт, который все сделает хорошо.
+```cmd
+@chcp 65001
+vrunner xunit "./tests" --reportsxunit "ГенераторОтчетаAllureXML{./build/allure-testsuite.xml}" --xddExitCodePath "./build/xddExitCodePath.txt" --clear-reports --xdddebug --testclient-additional "/iTaxi" --nocacheuse --xddConfig "xUnitParams.json"
+```
+
+```env.json``` - Файл с настройками, в какой базе и под каким пользователем запускать
+```json
+{
+    "$schema": "https://raw.githubusercontent.com/vanessa-opensource/vanessa-runner/develop/vanessa-runner-schema.json",
+    "default": {
+        "--ibconnection": "/FC:\\Users\\n.ivanchenko\\Documents\\testing\\infobase",
+        "--db-user": "Администратор",
+        "--db-pwd": "",
+        "--root": ".",
+        "--workspace": ".",
+        "--v8version": "8.3.20"
+
+    },
+    "xunit": {
+        "--testclient": "Администратор::48223"
+    }
+}
+```
+
+```xUnitParams.json``` - Файл с настройками, что бы в консоле был виден ход выполнения результата тестирования.
+```json
+{
+	"$schema":"https://raw.githubusercontent.com/vanessa-opensource/vanessa-runner/develop/xunit-schema.json",
+    "Отладка":false,
+    "ВыводитьПодробноеПредставлениеОшибки": true,
+    "ДобавлятьИмяПользователяВПредставлениеТеста":false,
+    "ДелатьЛогВыполненияСценариевВТекстовыйФайл":true,
+    "ИмяФайлаЛогВыполненияСценариев": "logs/xunit.log"
+}
+```
+
+# Выводы.
+
+Теперь у Вас есть все знания для того, что бы начать тестировать. Никаких больше отговорок. Пишите тесты, думайте о тестах, когда не пишите тесты.
+
+Кстати в мире есть такой подход [TDD](https://ru.wikipedia.org/wiki/%D0%A0%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0_%D1%87%D0%B5%D1%80%D0%B5%D0%B7_%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5), поднабив руку в написании тестов, можно его попробовать. Это интересный опыт.

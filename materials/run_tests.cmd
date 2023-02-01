@@ -1,0 +1,2 @@
+@chcp 65001
+vrunner xunit "./tests" --reportsxunit "ГенераторОтчетаAllureXML{./build/allure-testsuite.xml}" --xddExitCodePath "./build/xddExitCodePath.txt" --clear-reports --xdddebug --testclient-additional "/iTaxi" --nocacheuse --xddConfig "xUnitParams.json"
